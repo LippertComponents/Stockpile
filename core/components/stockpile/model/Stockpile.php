@@ -107,12 +107,7 @@ class Stockpile
                 'resource' => &$resource,
                 'data' => &$this->resource_data
             ]
-            );
-        /**
-         * phpmd.org
-         * security.sensiolabs.org
-         * phpunit.de
-         */
+        );
 
         // now cache it:
         $this->modx->cacheManager->set(
