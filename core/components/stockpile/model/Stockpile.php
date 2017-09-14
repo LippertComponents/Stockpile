@@ -22,6 +22,8 @@ class Stockpile
     /** @var int $cache_life in seconds, 0 is forever */
     protected $cache_life = 0;
 
+    /** @var array  */
+    protected $resource_data = [];
     /**
      * @param int $id
      *
@@ -57,6 +59,22 @@ class Stockpile
     }
 
     /**
+     * @return array
+     */
+    public function getResourceData()
+    {
+        return $this->resource_data;
+    }
+
+    /**
+     * @param array $resource_data
+     */
+    public function setResourceData(array $resource_data)
+    {
+        $this->resource_data = $resource_data;
+    }
+
+    /**
      * @param \modResource $resource
      *
      * @return mixed|array
@@ -78,8 +96,8 @@ class Stockpile
             }
         }
 
-        $data = $resource->toArray();
-        $data['tv'] = $tvs;
+        $this->resource_data = $resource->toArray();
+        $this->resource_data['tv'] = $tvs;
 
         // https://docs.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.invokeevent
         $this->modx->invokeEvent(
@@ -87,7 +105,7 @@ class Stockpile
             [
                 'stockpile' => $this,
                 'resource' => &$resource,
-                'data' => &$data
+                'data' => &$this->resource_data
             ]
             );
         /**
@@ -99,12 +117,12 @@ class Stockpile
         // now cache it:
         $this->modx->cacheManager->set(
             $this->getModxCacheKey($resource->get('id')),
-            $data,
+            $this->resource_data,
             $this->cache_life,
             $this->cacheOptions
         );
 
-        return $data;
+        return $this->resource_data;
     }
 
     /**

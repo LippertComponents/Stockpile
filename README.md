@@ -14,7 +14,12 @@ to get resource from cache, no DB/xPDO queries. Saves all fields and TV values t
 # How to use
 
  - Use snippet to process a chunk or set resource fields/tvs to placeholders
- - Customize what is cached on saved via the OnStockpileSave event. Write your own plugin 
+ - Customize what is cached on saved via the OnStockpileSave event. Write your own plugin.
+ - Passed from OnStockpileSave event: 
+    - @var \Lci\Stockpile $stockpile
+    - @var \modResource $resource
+    - @var array $data - resource fields and TVs
+    - can use $stockpile->setResourceData($data); after you make mods
  
 # CLI
 
