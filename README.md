@@ -1,6 +1,7 @@
 # Stockpile
 
-Stockpile as a cache on save caching plugin for MODX Revolution. Will only cache published resources.
+Stockpile is a cache on save caching plugin for MODX Revolution. Also provides a snippet, getStockpile
+to get resource from cache, no DB/xPDO queries. Saves all fields and TV values to cache.
 
 # Install
 
@@ -12,7 +13,8 @@ Stockpile as a cache on save caching plugin for MODX Revolution. Will only cache
 
 # How to use
 
- - Customize
+ - Use snippet to process a chunk or set resource fields/tvs to placeholders
+ - Customize what is cached on saved via the OnStockpileSave event. Write your own plugin 
  
 # CLI
 
