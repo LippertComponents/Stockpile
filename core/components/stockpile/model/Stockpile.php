@@ -181,7 +181,9 @@ class Stockpile
         $data = $this->modx->cacheManager->get($this->getModxCacheKey($id), $this->cacheOptions);
         if (!$data) {
             $resource = $this->modx->getObject('modResource', $id);
-            $data = $this->cacheResource($resource);
+            if ($resource) {
+                $data = $this->cacheResource($resource);
+            }
         }
         return $data;
     }
