@@ -6,7 +6,7 @@ $corePath = $modx->getOption('stockpile.core_path', null, $modx->getOption('core
 require_once $corePath . 'model/Stockpile.php';
 
 /** @var \Lci\Stockpile */
-$stockpile = new \Lci\Stockpile($this->modx);
+$stockpile = new \Lci\Stockpile($modx);
 
 switch($eventName) {
 
