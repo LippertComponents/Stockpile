@@ -81,7 +81,11 @@ if ($debug) {
 
 $output = '';
 if (!empty($item)) {
-    $output = $modx->getChunk($item, $stockpile_resource);
+    $data = $stockpile_resource;
+    if (!empty($prefix)) {
+        $data = [$prefix => $stockpile_resource];
+    }
+    $output = $modx->getChunk($item, $data);
 }
 
 if ($send_to_placeholders) {
