@@ -54,7 +54,7 @@ class Stockpile
         if ($resource->get('published')) {
             $this->cacheResource($resource);
         } else {
-            $this->removeResourceCache($resource);
+            $this->removeResourceCache($resource->get('id'));
         }
     }
 

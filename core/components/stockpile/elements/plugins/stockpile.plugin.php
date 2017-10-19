@@ -18,7 +18,9 @@ switch($eventName) {
         $stockpile->onSaveResource($resource);
         break;
     case 'OnDocFormDelete':
-        $stockpile->removeResourceCache($id);
+        if(!$stockpile->removeResourceCache($id)) {
+            $modx->log(modX::LOG_LEVEL_ERROR, 'Stockpile could not delete cache for resource ID: '.$id.' OnDocFormDelete');
+        }
         break;
 
     case 'OnSiteRefresh':
