@@ -22,6 +22,9 @@ class Stockpile
     /** @var int $cache_life in seconds, 0 is forever */
     protected $cache_life = 0;
 
+    /** @var int|bool $page_cache_life in seconds, for a given page instance, 0 is forever */
+    protected $page_cache_life = false;
+
     /** @var array  */
     protected $resource_data = [];
     /**
@@ -44,6 +47,56 @@ class Stockpile
     {
         $this->modx = $modx;
     }
+
+    /**
+     * @return int
+     */
+    public function getCacheLife()
+    {
+        return $this->cache_life;
+    }
+
+    /**
+     * @param int $cache_life ~ default cache_life
+     * @return $this
+     */
+    public function setCacheLife(int $cache_life)
+    {
+        $this->cache_life = $cache_life;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPageCacheLife()
+    {
+        if ($this->page_cache_life !== false) {
+            return $this->page_cache_life;
+        } else {
+            return $this->getCacheLife();
+        }
+    }
+
+    /**
+     * @param int $page_cache_life
+     * @return $this
+     */
+    public function setPageCacheLife(int $page_cache_life)
+    {
+        $this->page_cache_life = $page_cache_life;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetPageCacheLife()
+    {
+        $this->page_cache_life = false;
+        return $this;
+    }
+
 
     /**
      * @param \modResource $resource
@@ -113,7 +166,7 @@ class Stockpile
         $this->modx->cacheManager->set(
             $this->getModxCacheKey($resource->get('id')),
             $this->resource_data,
-            $this->cache_life,
+            $this->getPageCacheLife(),
             $this->cacheOptions
         );
 
@@ -167,6 +220,7 @@ class Stockpile
         foreach ($resources as $resource) {
             $progress->current($count++, $resource->get('id').' '.$resource->get('pagetitle'));
             $this->cacheResource($resource);
+            $this->resetPageCacheLife();
         }
 
     }
