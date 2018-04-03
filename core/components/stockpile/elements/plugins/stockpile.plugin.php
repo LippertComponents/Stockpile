@@ -10,6 +10,26 @@ $stockpile = new \Lci\Stockpile($modx);
 
 switch($eventName) {
 
+    case 'OnResourceAutoPublish':
+        if (isset($results) && isset($results['published_resources']) && is_array($results['published_resources'])) {
+            foreach ($results['published_resources'] as $row) {
+                $publishedResource = $modx->getObject('modResource', $row['id']);
+                if (is_object($publishedResource)) {
+                    $stockpile->onSaveResource($publishedResource);
+                }
+            }
+        }
+
+        if (isset($results) && isset($results['unpublished_resources']) && is_array($results['unpublished_resources'])) {
+            foreach ($results['unpublished_resources'] as $row) {
+                $unpublishedResource = $modx->getObject('modResource', $row['id']);
+                if (is_object($unpublishedResource)) {
+                    $stockpile->onSaveResource($unpublishedResource);
+                }
+            }
+        }
+
+        break;
     case 'OnDocFormSave':
         // no break;
     case 'OnDocPublished':

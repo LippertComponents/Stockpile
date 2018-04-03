@@ -125,7 +125,8 @@ class StockpileCli
                 'OnDocPublished',
                 'OnDocUnPublished',
                 'OnDocFormDelete',
-                'OnSiteRefresh'
+                'OnSiteRefresh',
+                'OnResourceAutoPublish'
             ];
 
             $events=[];
