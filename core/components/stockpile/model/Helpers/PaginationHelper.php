@@ -60,7 +60,7 @@ trait PaginationHelper
 
     /**
      * @param int $per_page
-     * @return PaginationHelper
+     * @return $this
      */
     public function setPerPage($per_page)
     {
@@ -70,7 +70,7 @@ trait PaginationHelper
 
     /**
      * @param int $page
-     * @return PaginationHelper
+     * @return $this
      */
     public function setPage($page)
     {
@@ -80,7 +80,7 @@ trait PaginationHelper
 
     /**
      * @param string $sort_column
-     * @return PaginationHelper
+     * @return $this
      */
     public function setSortColumn($sort_column)
     {
@@ -90,7 +90,7 @@ trait PaginationHelper
 
     /**
      * @param string $sort_dir
-     * @return PaginationHelper
+     * @return $this
      */
     public function setSortDir($sort_dir)
     {
