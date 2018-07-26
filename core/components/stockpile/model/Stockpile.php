@@ -8,10 +8,13 @@
 
 namespace Lci;
 
+use Lci\Helpers\Extras\Tagger;
+
+require_once 'Helpers/Extras/Tagger.php';
 
 class Stockpile
 {
-    /** @var  \modx */
+    /** @var  \modX */
     protected $modx;
 
     /** @var array  */
@@ -40,7 +43,7 @@ class Stockpile
     /**
      * Stockpile constructor.
      *
-     * @param Modx $modx
+     * @param modX $modx
      * @param array $config
      */
     public function __construct(&$modx, $config=[])
@@ -152,6 +155,11 @@ class Stockpile
         $this->resource_data = $resource->toArray();
         $this->resource_data['tv'] = $tvs;
 
+        $tagger = new Tagger($this->modx);
+        if ($tagger->isInstalled()) {
+            $this->resource_data['tagger'] = $tagger->getResourceTags($resource->get('id'));
+        }
+
         // https://docs.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.invokeevent
         $this->modx->invokeEvent(
             'OnStockpileSave',
@@ -228,13 +236,14 @@ class Stockpile
     /**
      * @param int $id
      *
-     * @return mixed|array
+     * @return bool|null|array ~ if null then user does not have permissions
      */
     public function getResource($id)
     {
         $data = $this->modx->cacheManager->get($this->getModxCacheKey($id), $this->cacheOptions);
         if (!$data) {
             $resource = $this->modx->getObject('modResource', $id);
+
             if ($resource) {
                 $data = $this->cacheResource($resource);
             }
