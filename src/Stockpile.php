@@ -253,6 +253,10 @@ class Stockpile
             $this->resetPageCacheLife();
         }
 
+        if ($use_progress) {
+            $this->symfonyStyle->progressFinish();
+        }
+
         return $count;
     }
 
