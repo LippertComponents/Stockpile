@@ -19,9 +19,6 @@
   "require": {
     "lci/orchestrator": "^1.0.0"
   },
-  "bin": [
-    "bin/stockpile"
-  ],
   "minimum-stability": "dev",
   "prefer-stable": true
 }
