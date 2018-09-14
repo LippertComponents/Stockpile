@@ -5,9 +5,9 @@ to get resource from cache, no DB/xPDO queries. Saves all fields and TV values t
 
 ## Install via Composer
 
-Follow the Local Orchestrator helper to place in the correct location and then edit the composer.json file. Place 
-"lci/stockpile": "dev-master" in the require spot. And then put "lci/stockpile" in the auto-install array. And then 
-run composer install.
+Follow the [Local Orchestrator](https://github.com/LippertComponents/LocalOrchestrator) helper to place in the correct 
+location and then edit the composer.json file. Place "lci/stockpile": "dev-master" in the require spot. And then 
+put "lci/stockpile" in the auto-install array. And then run composer install.
 
 ## How to use
 
