@@ -1,0 +1,27 @@
+{
+  "name": "lci/stockpile",
+  "description": "Stockpile is a plugin for MODX Revolution that caches on save. Also provides a snippet, getStockpile to get resource from cache, no DB/xPDO queries. Saves all fields and TV values to cache.",
+  "license": "MIT",
+  "keywords": [
+    "modx", "cli", "cache"
+  ],
+  "authors": [
+    {
+      "name": "Joshua Gulledge",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "LCI\\MODX\\Stockpile\\": "src/"
+    }
+  },
+  "require": {
+    "lci/orchestrator": "^1.0.0"
+  },
+  "bin": [
+    "bin/stockpile"
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

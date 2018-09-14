@@ -26,9 +26,5 @@
  * @var boolean debug
  */
 
-$corePath = $modx->getOption('stockpile.core_path', null, $modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/stockpile/');
-require_once $corePath . 'model/Stockpile.php';
-require_once $corePath . 'model/GetStockpileSnippet.php';
-
-$stockpileSnippet = new \Lci\GetStockpileSnippet($modx, $scriptProperties);
+$stockpileSnippet = new \LCI\MODX\Stockpile\GetStockpileSnippet($modx, $scriptProperties);
 return $stockpileSnippet->runSnippet();

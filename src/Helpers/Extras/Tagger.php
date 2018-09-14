@@ -6,13 +6,11 @@
  * Time: 10:46 AM
  */
 
-namespace Lci\Helpers\Extras;
+namespace LCI\MODX\Stockpile\Helpers\Extras;
 
-use Lci\Helpers\PaginationHelper;
+use LCI\MODX\Stockpile\Helpers\PaginationHelper;
 use \modX;
 use \Tagger as modxTagger;
-
-require_once dirname(__DIR__).'/PaginationHelper.php';
 
 class Tagger
 {

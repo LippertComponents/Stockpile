@@ -6,16 +6,19 @@
  * Time: 1:37 PM
  */
 
-namespace Lci;
+namespace LCI\MODX\Stockpile;
 
-use Lci\Helpers\Extras\Tagger;
-
-require_once 'Helpers/Extras/Tagger.php';
+use LCI\MODX\Stockpile\Helpers\Extras\Tagger;
+use modx;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class Stockpile
 {
     /** @var  \modX */
     protected $modx;
+
+    /** @var SymfonyStyle */
+    protected $symfonyStyle;
 
     /** @var array  */
     protected $cacheOptions = [
@@ -131,6 +134,14 @@ class Stockpile
     }
 
     /**
+     * @param SymfonyStyle $symfonyStyle
+     */
+    public function setSymfonyStyle(SymfonyStyle $symfonyStyle)
+    {
+        $this->symfonyStyle = $symfonyStyle;
+    }
+
+    /**
      * @param \modResource $resource
      *
      * @return mixed|array
@@ -215,22 +226,34 @@ class Stockpile
         }
         return $deleted;
     }
-    // Should only be called via CLI
-    public function cacheAllResources(\League\CLImate\CLImate $CLImate)
+
+    /**
+     * @return int
+     */
+    public function cacheAllResources()
     {
         // get total number of items to cache
         $resources = $this->modx->getCollection('modResource');
 
         $total = count($resources);
-        $progress = $CLImate->progress()->total($total);
+        $use_progress = false;
+        if ($this->symfonyStyle instanceof SymfonyStyle) {
+            $this->symfonyStyle->progressStart($total);
+            $use_progress = true;
+        }
 
         $count = 0;
         foreach ($resources as $resource) {
-            $progress->current($count++, $resource->get('id').' '.$resource->get('pagetitle'));
+            if ($use_progress) {
+                // $resource->get('id') . ' ' . $resource->get('pagetitle');
+                $this->symfonyStyle->progressAdvance();
+            }
+            $count++;
             $this->cacheResource($resource);
             $this->resetPageCacheLife();
         }
 
+        return $count;
     }
 
     /**

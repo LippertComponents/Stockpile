@@ -3,10 +3,8 @@ $eventName = $modx->event->name;
 
 $corePath = $modx->getOption('stockpile.core_path', null, $modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/stockpile/');
 
-require_once $corePath . 'model/Stockpile.php';
-
-/** @var \Lci\Stockpile */
-$stockpile = new \Lci\Stockpile($modx);
+/** @var \LCI\MODX\Stockpile\Stockpile */
+$stockpile = new \LCI\MODX\Stockpile\Stockpile($modx);
 
 switch($eventName) {
 

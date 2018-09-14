@@ -135,3 +135,5 @@ fabric.properties
 
 /core/components/stockpile/model/composer.lock
 /core/components/stockpile/model/vendor/
+/vendor/
+/composer.lock

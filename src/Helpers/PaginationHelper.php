@@ -6,7 +6,7 @@
  * Time: 10:26 AM
  */
 
-namespace Lci\Helpers;
+namespace LCI\MODX\Stockpile\Helpers;
 
 
 trait PaginationHelper

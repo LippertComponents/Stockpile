@@ -6,7 +6,7 @@
  * Time: 11:02 AM
  */
 
-namespace Lci;
+namespace LCI\MODX\Stockpile;
 
 
 class GetStockpileSnippet
