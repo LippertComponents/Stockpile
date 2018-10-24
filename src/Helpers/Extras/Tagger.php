@@ -110,7 +110,8 @@ class Tagger
         [
             'group-alias' => [
                 'tags' => [],
-                'columns' => []
+                'columns' => [],
+                'tag-ids' => []
             ]
         ];
         // get resource Group
@@ -154,6 +155,8 @@ class Tagger
             }
 
             $tags[$tag['group_alias']]['tags'][] = $tag_columns;
+            $tags[$tag['group_alias']]['tag-ids'][] = $tag['id'];
+
         }
 
         return $tags;
