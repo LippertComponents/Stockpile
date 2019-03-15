@@ -33,7 +33,9 @@ switch($eventName) {
     case 'OnDocPublished':
         // no break;
     case 'OnDocUnPublished':
-        $stockpile->onSaveResource($resource);
+        /** @var modResource $cleanResource removes extra/dirty data that is passed via the manager */
+        $cleanResource = $modx->getObject('modResource', $resource->get('id'));
+        $stockpile->onSaveResource($cleanResource);
         break;
     case 'OnDocFormDelete':
         if(!$stockpile->removeResourceCache($id)) {
