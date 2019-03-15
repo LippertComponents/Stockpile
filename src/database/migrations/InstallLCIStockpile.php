@@ -17,7 +17,7 @@ class InstallLCIStockpile extends Migrations
     public function up()
     {
         // 1. The plugin
-        $plugin = $this->blender->getBlendablePlugin('Stockpile');
+        $plugin = $this->blender->getBlendableLoader()->getBlendablePlugin('Stockpile');
         $saved = $plugin
             ->setSeedsDir($this->getSeedsDir())
             ->setFieldCategory('Stockpile')
@@ -63,7 +63,7 @@ class InstallLCIStockpile extends Migrations
         // Snippets
         $name = 'getStockpile';
 
-        $snippet = $this->blender->getBlendableSnippet($name);
+        $snippet = $this->blender->getBlendableLoader()->getBlendableSnippet($name);
         $saved = $snippet
             ->setSeedsDir($this->getSeedsDir())
             ->setFieldCategory('Stockpile')
@@ -92,7 +92,7 @@ class InstallLCIStockpile extends Migrations
     public function down()
     {
         // 1. The plugin
-        $plugin = $this->blender->getBlendablePlugin('Stockpile');
+        $plugin = $this->blender->getBlendableLoader()->getBlendablePlugin('Stockpile');
         $saved = $plugin->revertBlend();
 
         if ($saved) {
@@ -116,7 +116,7 @@ class InstallLCIStockpile extends Migrations
         // Snippets
         $name = 'getStockpile';
 
-        $snippet = $this->blender->getBlendableSnippet($name);
+        $snippet = $this->blender->getBlendableLoader()->getBlendableSnippet($name);
         $saved = $snippet->revertBlend();
 
         if ($saved) {
