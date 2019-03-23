@@ -9,7 +9,7 @@
 namespace LCI\MODX\Stockpile;
 
 use LCI\MODX\Stockpile\Helpers\Extras\Tagger;
-use modx;
+use modX;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class Stockpile
@@ -164,6 +164,7 @@ class Stockpile
         }
 
         $this->resource_data = $resource->toArray();
+        $this->resource_data['full_url'] = $this->modx->makeUrl($resource->get('id'), $resource->get('context_key'), '', 'full');
         $this->resource_data['tv'] = $tvs;
 
         $tagger = new Tagger($this->modx);
