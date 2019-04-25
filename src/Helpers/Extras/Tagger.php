@@ -147,10 +147,12 @@ class Tagger
                     $tag_columns[$name] = $value;
                 }
             }
-            if ( !isset($tags[$tag['group_name']])) {
+
+            if ( !isset($tags[$tag['group_alias']])) {
                 $tags[$tag['group_alias']] = [
                     'columns' => $group_columns,
-                    'tags' => []
+                    'tags' => [],
+                    'tag-ids' => []
                 ];
             }
 
