@@ -129,5 +129,7 @@ class RemoveCache extends BaseCommand
                 break;
 
         }
+
+        $output->writeln($this->getRunStats());
     }
 }

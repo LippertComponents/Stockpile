@@ -133,5 +133,7 @@ class BuildCache extends BaseCommand
                 break;
 
         }
+
+        $output->writeln($this->getRunStats());
     }
 }

@@ -9,7 +9,11 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
     MINOR version when you add functionality in a backwards-compatible manner, and
     PATCH version when you make backwards-compatible bug fixes.
 
-## [v1.2.0](https://github.com/LippertComponents/Stockpile/compare/v1.1.1...master) - 2019-05-30
+## [v1.2.1](https://github.com/LippertComponents/Stockpile/compare/v1.2.0...1.2.1) - 2019-05-30
+## Added 
+- Add missing run stats to the Build and Remove Cache commands
+
+## [v1.2.0](https://github.com/LippertComponents/Stockpile/compare/v1.1.1...1.2.0) - 2019-05-30
 ## Added 
 -  Add makeRemainingTagsUncacheableStaticFileOnWebCache method that will write the content to a -remaining-tags directory so they can be reviewed
 
