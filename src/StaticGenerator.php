@@ -56,6 +56,15 @@ class StaticGenerator
      */
     public function deleteAllStaticResourcesFiles()
     {
+        $this->cacheManager->deleteTree(
+            rtrim($this->config['LCI_STOCKPILE_CACHE_PATH'], '/').'-remaining-tags/',
+            [
+                'deleteTop' => false,
+                'skipDirs' => false,
+                'extensions' => [],
+            ]
+        );
+
         return $this->cacheManager->deleteTree(
             $this->config['LCI_STOCKPILE_CACHE_PATH'],
             [
@@ -81,6 +90,12 @@ class StaticGenerator
             if ($deleted = unlink($static_resource_file) === false) {
                 $this->modx->log(modX::LOG_LEVEL_ERROR, "Error removing static file {$static_resource_file}", '', __METHOD__);
             }
+        }
+
+        $static_remaining_tags_resource_file = $this->getStaticResourcePath($resource, true);
+
+        if (is_readable($static_remaining_tags_resource_file)) {
+            unlink($static_remaining_tags_resource_file);
         }
 
         return $deleted;
@@ -158,9 +173,10 @@ class StaticGenerator
 
     /**
      * @param modResource $resource
+     * @param bool $add_remaining_tags
      * @return string
      */
-    public function getStaticResourcePath(modResource $resource)
+    public function getStaticResourcePath(modResource $resource, $add_remaining_tags=false)
     {
         if ($resource->Context->config === null) {
             $resource->Context->prepare();
@@ -168,7 +184,8 @@ class StaticGenerator
 
         $resourceContext = $resource->Context;
 
-        $path = rtrim($this->config['LCI_STOCKPILE_CACHE_PATH'], '/').'/';
+
+        $path = rtrim($this->config['LCI_STOCKPILE_CACHE_PATH'], '/').($add_remaining_tags ? '-remaining-tags' : '').'/';
 
         /* generate an absolute URI representation of the Resource to append to the path */
         if ($resource->get('id') === (integer)$resourceContext->getOption('site_start', 1)) {
@@ -231,7 +248,7 @@ class StaticGenerator
 
         if ($this->config['LCI_STOCKPILE_EXCLUDE_REMAINING_TAGS'] &&
             $this->modx->parser->collectElementTags($resource->_content, $matches)) {
-            // @TODO log _content to see the remaining tags?
+            $this->makeRemainingTagsUncacheableStaticFileOnWebCache($resource);
             return false;
         }
 
@@ -319,6 +336,22 @@ class StaticGenerator
         ]);
 
         return $this->modx->getCollection('modResource', $query);
+    }
+
+    /**
+     * @param modResource $resource
+     * @return mixed
+     */
+    public function makeRemainingTagsUncacheableStaticFileOnWebCache(modResource $resource)
+    {
+        $static_resource_file = $this->getStaticResourcePath($resource, true);
+
+        /* attempt to write the complete Resource output to the static file */
+        if (!$written = $this->modx->cacheManager->writeFile($static_resource_file, $resource->_content)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, "Error caching _content from Resource {$resource->get('id')} to static file {$static_resource_file}", '', __METHOD__);
+        }
+
+        return $written;
     }
 
 }
