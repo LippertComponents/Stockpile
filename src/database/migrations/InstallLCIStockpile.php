@@ -93,6 +93,8 @@ class InstallLCIStockpile extends Migrations
     {
         // 1. The plugin
         $plugin = $this->blender->getBlendableLoader()->getBlendablePlugin('Stockpile');
+        $plugin->setSeedsDir($this->getSeedsDir());
+
         $saved = $plugin->revertBlend();
 
         if ($saved) {
@@ -117,6 +119,8 @@ class InstallLCIStockpile extends Migrations
         $name = 'getStockpile';
 
         $snippet = $this->blender->getBlendableLoader()->getBlendableSnippet($name);
+        $snippet->setSeedsDir($this->getSeedsDir());
+
         $saved = $snippet->revertBlend();
 
         if ($saved) {

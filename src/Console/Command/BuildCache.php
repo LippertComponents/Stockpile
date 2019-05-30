@@ -126,7 +126,7 @@ class BuildCache extends BaseCommand
                 // no break
             default:
                 $count = $stockpile->cacheAllResources();
-                $output->writeln('All ' . $count . ' resources have been cached');
+                $output->writeln('All ' . $count . ' resources have been cached to stockpile array');
 
                 $count = $staticGenerator->rebuildAllResources($io);
                 $output->writeln('All ' . $count . ' resources have been cached as static');

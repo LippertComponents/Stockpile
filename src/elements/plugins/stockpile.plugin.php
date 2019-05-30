@@ -14,7 +14,7 @@ $staticGenerator = new StaticGenerator($modx);
 
 switch($eventName) {
     case 'OnBeforeSaveWebPageCache':
-        $staticGenerator->makeResourceStaticFile($modx->resource);
+        $staticGenerator->makeResourceStaticFileOnWebCache($modx->resource);
         break;
 
     case 'OnResourceAutoPublish':

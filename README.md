@@ -30,10 +30,12 @@ Command line:
  
 Options
  
- - stockpile:build ~ this will (re)cache all resources
- - stockpile:build -t r -i ID ~ this will (re)cache a resource ID
- - stockpile:remove ~ Clear/Remove all stockpile cache
- - stockpile:remove -t r -i ID ~ clear/remove cache for that resource ID
+ - `stockpile:build` ~ this will (re)cache all resources
+ - `stockpile:build --type r -id 2` ~ this will (re)cache a resource ID
+    - Short hand: `stockpile:build -t r -i 2`
+ - `stockpile:remove` ~ Clear/Remove all stockpile cache
+ - `stockpile:remove --type r -id 2` ~ clear/remove cache for that resource ID
+    - Short hand: `stockpile:remove -t r -i 2`
 
 ## Static Generator 
 
@@ -41,6 +43,16 @@ Based on StatCache: https://github.com/opengeek/statcache, configure with the .e
 
 ### Nginx rules
 
+Example on MODXCloud
+
+*Remove*
+```
+location / {
+    try_files $uri $uri/ @modx-rewrite;
+}
+```
+
+*Replace with*
 ```
 # Start Stockpile Static Generator
 set $cache_prefix 'core/cache/static';
