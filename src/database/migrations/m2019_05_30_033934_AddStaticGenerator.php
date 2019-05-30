@@ -32,7 +32,7 @@ class m2019_05_30_033934_AddStaticGenerator extends Migrations
             ->attachOnEvent('OnResourceUndelete')
             ->attachOnEvent('OnResourceDelete')
             ->attachOnEvent('OnBeforeSaveWebPageCache')
-            ->blend();
+            ->blend(true);
 
         if ($saved) {
             $this->blender->outSuccess('Stockpile Plugin has been installed');
