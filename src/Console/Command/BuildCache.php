@@ -11,6 +11,7 @@ namespace LCI\MODX\Stockpile\Console\Command;
 
 use LCI\MODX\Console\Command\BaseCommand;
 use LCI\MODX\Orchestrator\Orchestrator;
+use LCI\MODX\Stockpile\StaticGenerator;
 use LCI\MODX\Stockpile\Stockpile;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -70,6 +71,8 @@ class BuildCache extends BaseCommand
         $stockpile = new Stockpile($modx);
         $stockpile->setSymfonyStyle($io);
 
+        $staticGenerator = new StaticGenerator($modx);
+
         switch (strtolower($type)) {
 
             case 'r':
@@ -86,6 +89,8 @@ class BuildCache extends BaseCommand
 
                     } else {
                         $stockpile->cacheResource($resource);
+
+                        $staticGenerator->rebuildStaticResourceOnSave($resource);
                         $output->writeln('Resource cached: '.$id.' '.$resource->get('pagetitle'));
                     }
                 }
@@ -107,6 +112,8 @@ class BuildCache extends BaseCommand
                     } else {
                         foreach ($resources as $resource) {
                             $stockpile->cacheResource($resource);
+
+                            $staticGenerator->rebuildStaticResourceOnSave($resource);
                             $output->writeln('Resource cached: ' . $resource->get('id') . ' ' . $resource->get('pagetitle'));
                         }
                     }
@@ -120,6 +127,9 @@ class BuildCache extends BaseCommand
             default:
                 $count = $stockpile->cacheAllResources();
                 $output->writeln('All ' . $count . ' resources have been cached');
+
+                $count = $staticGenerator->rebuildAllResources($io);
+                $output->writeln('All ' . $count . ' resources have been cached as static');
                 break;
 
         }

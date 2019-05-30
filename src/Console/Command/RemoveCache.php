@@ -10,6 +10,7 @@ namespace LCI\MODX\Stockpile\Console\Command;
 
 
 use LCI\MODX\Console\Command\BaseCommand;
+use LCI\MODX\Stockpile\StaticGenerator;
 use LCI\MODX\Stockpile\Stockpile;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -68,6 +69,8 @@ class RemoveCache extends BaseCommand
         $stockpile = new Stockpile($modx);
         $stockpile->setSymfonyStyle($io);
 
+        $staticGenerator = new StaticGenerator($modx);
+
         switch (strtolower($type)) {
 
             case 'r':
@@ -84,6 +87,7 @@ class RemoveCache extends BaseCommand
 
                     } else {
                         $stockpile->removeResourceCache($resource);
+                        $staticGenerator->deleteStaticResourceFile($resource);
                         $output->writeln('Resource cache has been removed: '.$id.' '.$resource->get('pagetitle'));
                     }
                 }
@@ -105,6 +109,7 @@ class RemoveCache extends BaseCommand
                     } else {
                         foreach ($resources as $resource) {
                             $stockpile->removeResourceCache($resource);
+                            $staticGenerator->deleteStaticResourceFile($resource);
                             $output->writeln('Resource cache has been removed: ' . $resource->get('id') . ' ' . $resource->get('pagetitle'));
                         }
                     }
@@ -118,6 +123,9 @@ class RemoveCache extends BaseCommand
             default:
                 $count = $stockpile->removeAllResourceCache();
                 $output->writeln('All ' . $count . ' resources cache has been removed');
+
+                $count = $staticGenerator->deleteAllStaticResourcesFiles();
+                $output->writeln('All ' . $count . ' static generated resources cache has been removed');
                 break;
 
         }
