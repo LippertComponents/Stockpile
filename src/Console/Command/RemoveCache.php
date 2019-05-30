@@ -86,7 +86,7 @@ class RemoveCache extends BaseCommand
                         $output->writeln('Please pass a valid resource ID, '.$id. ' is invalid');
 
                     } else {
-                        $stockpile->removeResourceCache($resource);
+                        $stockpile->removeResourceCache($resource->get('id'));
                         $staticGenerator->deleteStaticResourceFile($resource);
                         $output->writeln('Resource cache has been removed: '.$id.' '.$resource->get('pagetitle'));
                     }
@@ -108,7 +108,7 @@ class RemoveCache extends BaseCommand
 
                     } else {
                         foreach ($resources as $resource) {
-                            $stockpile->removeResourceCache($resource);
+                            $stockpile->removeResourceCache($resource->get('id'));
                             $staticGenerator->deleteStaticResourceFile($resource);
                             $output->writeln('Resource cache has been removed: ' . $resource->get('id') . ' ' . $resource->get('pagetitle'));
                         }
