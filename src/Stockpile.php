@@ -11,6 +11,7 @@ namespace LCI\MODX\Stockpile;
 use LCI\MODX\Stockpile\Helpers\Extras\Tagger;
 use modX;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use xPDO;
 
 class Stockpile
 {
@@ -22,7 +23,7 @@ class Stockpile
 
     /** @var array  */
     protected $cacheOptions = [
-        \xPDO::OPT_CACHE_KEY => 'stockpile'
+        xPDO::OPT_CACHE_KEY => 'stockpile'
     ];
 
     /** @var int $cache_life in seconds, 0 is forever */
@@ -200,6 +201,12 @@ class Stockpile
      */
     public function removeResourceCache($id)
     {
+        // Delete the MODX default cache as well:
+        $resource = $this->modx->getObject('modResource', $id);
+        if ($resource) {
+            $resource->clearCache();
+        }
+
         return $this->modx->cacheManager->delete($this->getModxCacheKey($id), $this->cacheOptions);
     }
 
@@ -208,7 +215,7 @@ class Stockpile
      */
     public function getCachePath()
     {
-        return $this->modx->getOption(\xPDO::OPT_CACHE_PATH) . $this->cacheOptions[\xPDO::OPT_CACHE_KEY];
+        return $this->modx->getOption(xPDO::OPT_CACHE_PATH) . $this->cacheOptions[xPDO::OPT_CACHE_KEY];
     }
     /**
      * @return bool
