@@ -29,24 +29,10 @@ class BuildCache extends BaseCommand
             ->setName('stockpile:build')
             ->setDescription('Build Stockpile cache for all or select Resources')
             ->addOption(
-                'type',
-                't',
-                InputOption::VALUE_OPTIONAL,
-                '(a)All, (r)Resource or (s)Select Resources',
-                'a'
-            )
-            ->addOption(
-                'id',
-                'i',
-                InputOption::VALUE_OPTIONAL,
-                'If type is Resource then a valid Resource ID',
-                '0'
-            )
-            ->addOption(
                 'ids',
                 's',
                 InputOption::VALUE_OPTIONAL,
-                'If type is Select Resources then a valid list of comma separated Resource IDs',
+                'Optionally limit to specific resources IDs, pass a valid list of comma separated Resource IDs',
                 '0'
             );
     }
@@ -63,9 +49,7 @@ class BuildCache extends BaseCommand
         /** @var SymfonyStyle $io */
         $io = new SymfonyStyle($input, $output);
 
-        $type = $input->getOption('type');
-        $id = $input->getOption('id');
-        $ids = $input->getOption('ids');
+        $ids = explode(',', $input->getOption('ids'));
 
         $modx = $this->console->loadMODX();
         $stockpile = new Stockpile($modx);
@@ -73,65 +57,26 @@ class BuildCache extends BaseCommand
 
         $staticGenerator = new StaticGenerator($modx);
 
-        switch (strtolower($type)) {
+        if (count($ids) > 1 || (count($ids) == 1 && !empty(count($ids)))) {
+            // select resources
+            $resources = $modx->getCollection('modResource', ['id:IN' => $ids]);
 
-            case 'r':
-                // no break
-            case 'resource':
-                if (empty($id) || !is_numeric($id)) {
-                    $output->writeln('Please pass a valid resource ID via the -i option');
+            if (!$resources) {
+                $output->writeln('Please pass valid resource IDs');
 
-                } else {
-                    $resource = $modx->getObject('modResource', (int)$id);
+            } else {
+                foreach ($resources as $resource) {
+                    $stockpile->cacheResource($resource);
 
-                    if (!$resource) {
-                        $output->writeln('Please pass a valid resource ID, '.$id. ' is invalid');
-
-                    } else {
-                        $stockpile->cacheResource($resource);
-
-                        $staticGenerator->rebuildStaticResourceOnSave($resource);
-                        $output->writeln('Resource cached: '.$id.' '.$resource->get('pagetitle'));
-                    }
+                    $staticGenerator->rebuildStaticResourceOnSave($resource);
+                    $output->writeln('Resource cached: ' . $resource->get('id') . ' ' . $resource->get('pagetitle'));
                 }
-                break;
+            }
 
-            case 's':
-                // no break
-            case 'select resources':
-                if (empty($ids)) {
-                    $output->writeln('Please pass valid resource IDs via the -s option');
-
-                } else {
-
-                    $resources = $modx->getCollection('modResource', ['id:IN' => explode(',', $ids)]);
-
-                    if (!$resources) {
-                        $output->writeln('Please pass valid resource IDs');
-
-                    } else {
-                        foreach ($resources as $resource) {
-                            $stockpile->cacheResource($resource);
-
-                            $staticGenerator->rebuildStaticResourceOnSave($resource);
-                            $output->writeln('Resource cached: ' . $resource->get('id') . ' ' . $resource->get('pagetitle'));
-                        }
-                    }
-                }
-                break;
-
-            case 'a':
-                // no break
-            case 'all':
-                // no break
-            default:
-                $count = $stockpile->cacheAllResources();
-                $output->writeln('All ' . $count . ' resources have been cached to stockpile array');
-
-                $count = $staticGenerator->rebuildAllResources($io);
-                $output->writeln('All ' . $count . ' resources have been cached as static');
-                break;
-
+        } else {
+            // all
+            $count = $stockpile->cacheAllResources();
+            $output->writeln('All ' . $count . ' resources have been cached by stockpile');
         }
 
         $output->writeln($this->getRunStats());

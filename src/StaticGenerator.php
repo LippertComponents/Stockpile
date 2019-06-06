@@ -104,6 +104,14 @@ class StaticGenerator
     /**
      * @param modResource $resource
      */
+    public function rebuildStaticResource(modResource $resource)
+    {
+        $this->callResourceViaHTTPToCache($resource);
+    }
+
+    /**
+     * @param modResource $resource
+     */
     public function rebuildStaticResourceOnSave(modResource $resource)
     {
         if ($this->config['LCI_STOCKPILE_REGENERATE_ON_SAVE']) {

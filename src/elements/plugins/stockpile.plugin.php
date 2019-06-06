@@ -51,16 +51,12 @@ switch($eventName) {
         /** @var modResource $cleanResource removes extra/dirty data that is passed via the manager */
         $cleanResource = $modx->getObject('modResource', $resource->get('id'));
         $stockpile->onSaveResource($cleanResource);
-
-        $staticGenerator->rebuildStaticResourceOnSave($resource);
         break;
     //case 'OnDocFormDelete':
     case 'OnResourceDelete':
         if(!$stockpile->removeResourceCache($id)) {
             $modx->log(modX::LOG_LEVEL_ERROR, 'Stockpile could not delete cache for resource ID: '.$id.' OnDocFormDelete');
         }
-
-        //$staticGenerator->deleteStaticResourceFile($unpublishedResource);
         break;
 
     case 'OnSiteRefresh':

@@ -34,6 +34,10 @@ class Stockpile
 
     /** @var array  */
     protected $resource_data = [];
+
+    /** @var StaticGenerator */
+    protected $staticGenerator;
+
     /**
      * @param int $id
      *
@@ -53,6 +57,8 @@ class Stockpile
     public function __construct(&$modx, $config=[])
     {
         $this->modx = $modx;
+
+        $this->staticGenerator = new StaticGenerator($this->modx);
     }
 
     /**
@@ -115,6 +121,7 @@ class Stockpile
             $this->cacheResource($resource);
         } else {
             $this->removeResourceCache($resource->get('id'));
+            $this->staticGenerator->deleteStaticResourceFile($resource);
         }
     }
 
@@ -147,7 +154,7 @@ class Stockpile
      *
      * @return mixed|array
      */
-    public function cacheResource(\modResource $resource)
+    public function cacheResource(\modResource $resource, $mode='onSave')
     {
         $tvs = [];// TemplateVarResources modTemplateVarResource
         // get Template:
@@ -190,6 +197,12 @@ class Stockpile
             $this->getPageCacheLife(),
             $this->cacheOptions
         );
+
+        if ($mode == 'onSave') {
+            $this->staticGenerator->rebuildStaticResourceOnSave($resource);
+        } else {
+            $this->staticGenerator->rebuildStaticResource($resource);
+        }
 
         return $this->resource_data;
     }
@@ -257,7 +270,7 @@ class Stockpile
                 $this->symfonyStyle->progressAdvance();
             }
             $count++;
-            $this->cacheResource($resource);
+            $this->cacheResource($resource, 'all');
             $this->resetPageCacheLife();
         }
 
