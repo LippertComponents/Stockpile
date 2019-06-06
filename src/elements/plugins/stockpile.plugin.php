@@ -23,8 +23,6 @@ switch($eventName) {
                 $publishedResource = $modx->getObject('modResource', $row['id']);
                 if (is_object($publishedResource)) {
                     $stockpile->onSaveResource($publishedResource);
-
-                    $staticGenerator->rebuildStaticResourceOnSave($publishedResource);
                 }
             }
         }
@@ -34,8 +32,6 @@ switch($eventName) {
                 $unpublishedResource = $modx->getObject('modResource', $row['id']);
                 if (is_object($unpublishedResource)) {
                     $stockpile->onSaveResource($unpublishedResource);
-
-                    $staticGenerator->deleteStaticResourceFile($unpublishedResource);
                 }
             }
         }
@@ -56,6 +52,10 @@ switch($eventName) {
     case 'OnResourceDelete':
         if(!$stockpile->removeResourceCache($id)) {
             $modx->log(modX::LOG_LEVEL_ERROR, 'Stockpile could not delete cache for resource ID: '.$id.' OnDocFormDelete');
+        }
+
+        if ($resource) {
+            $staticGenerator->deleteStaticResourceFile($resource);
         }
         break;
 

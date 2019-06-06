@@ -151,10 +151,11 @@ class Stockpile
 
     /**
      * @param \modResource $resource
+     * @param string $mode - plugin or command
      *
      * @return mixed|array
      */
-    public function cacheResource(\modResource $resource, $mode='onSave')
+    public function cacheResource(\modResource $resource, $mode='plugin')
     {
         $tvs = [];// TemplateVarResources modTemplateVarResource
         // get Template:
@@ -198,7 +199,7 @@ class Stockpile
             $this->cacheOptions
         );
 
-        if ($mode == 'onSave') {
+        if ($mode == 'plugin') {
             $this->staticGenerator->rebuildStaticResourceOnSave($resource);
         } else {
             $this->staticGenerator->rebuildStaticResource($resource);
@@ -270,7 +271,7 @@ class Stockpile
                 $this->symfonyStyle->progressAdvance();
             }
             $count++;
-            $this->cacheResource($resource, 'all');
+            $this->cacheResource($resource, 'command');
             $this->resetPageCacheLife();
         }
 
