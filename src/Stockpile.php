@@ -110,6 +110,23 @@ class Stockpile
         return $this;
     }
 
+    public function onDeleteResource(\modResource $resource)
+    {
+        $this->removeResourceCache($resource->get('id'));
+
+        $this->staticGenerator->deleteStaticResourceFile($resource);
+
+        // https://docs.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.invokeevent
+        $this->modx->invokeEvent(
+            'OnStockpileAfterDeleteMakeQueLog',
+            [
+                'stockpile' => $this,
+                'stockpileQue' => new StockpileQue($this->modx, $this),
+                'resource' => $resource,
+                'data' => $this->resource_data
+            ]
+        );
+    }
 
     /**
      * @param \modResource $resource
@@ -123,6 +140,17 @@ class Stockpile
             $this->removeResourceCache($resource->get('id'));
             $this->staticGenerator->deleteStaticResourceFile($resource);
         }
+
+        // https://docs.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.invokeevent
+        $this->modx->invokeEvent(
+            'OnStockpileAfterSaveMakeQueLog',
+            [
+                'stockpile' => $this,
+                'stockpileQue' => new StockpileQue($this->modx, $this),
+                'resource' => $resource,
+                'data' => $this->resource_data
+            ]
+        );
     }
 
     /**
@@ -210,10 +238,11 @@ class Stockpile
 
     /**
      * @param int $id
+     * @param string $mode - event or command
      *
      * @return bool
      */
-    public function removeResourceCache($id)
+    public function removeResourceCache($id, $mode='event')
     {
         // Delete the MODX default cache as well:
         $resource = $this->modx->getObject('modResource', $id);
