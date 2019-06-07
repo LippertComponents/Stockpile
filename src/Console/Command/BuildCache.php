@@ -30,7 +30,7 @@ class BuildCache extends BaseCommand
             ->setDescription('Build Stockpile cache for all or select Resources')
             ->addOption(
                 'ids',
-                's',
+                'i',
                 InputOption::VALUE_OPTIONAL,
                 'Optionally limit to specific resources IDs, pass a valid list of comma separated Resource IDs',
                 '0'

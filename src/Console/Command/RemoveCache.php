@@ -28,7 +28,7 @@ class RemoveCache extends BaseCommand
             ->setDescription('Remove Stockpile cache for all or select Resources')
             ->addOption(
                 'ids',
-                's',
+                'i',
                 InputOption::VALUE_OPTIONAL,
                 'If type is Select Resources then a valid list of comma separated Resource IDs',
                 '0'
