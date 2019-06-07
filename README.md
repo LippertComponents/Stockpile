@@ -10,32 +10,125 @@ Follow the [Local Orchestrator](https://github.com/LippertComponents/LocalOrches
 location and then edit the composer.json file. Place "lci/stockpile": "dev-master" in the require spot. And then 
 put "lci/stockpile" in the auto-install array. And then run composer install.
 
-## How to use
+## What is installed?
 
- - Use the getStockpile snippet to process a chunk form cached resource data or it can send the cached resource 
+### Snippet
+
+**getStockpile**
+
+Use the getStockpile snippet to process a chunk form cached resource data or it can send the cached resource 
 fields/tvs data to placeholders
- - Customize what is cached on saved via the OnStockpileSave event. Write your own plugin.
- - Passed from OnStockpileSave event: 
+
+| Property | Description | Default |
+|--- |--- |--- |
+| resourceID| int required,  a valid resource ID | |
+| item | string chunk name to be be processed with resource data. If empty snippet will return empty ex: &item=`myChunk` | |
+| sendToPlaceholders | boolean - send the data to placeholders | 1 |
+| prefix | string - for placeholders, example: &prefix=`sp` [[+sp.pagetitle]] | |
+| published | bool - require a resource to be published to complete request, if 0 then will show all | 1 |
+| debug | bool - show property values | 0 |
+
+### Plugin
+
+stockpile plugin is installed and is will save data on the following events
+
+| Event | Description |
+| --- | --- |
+| OnBeforeSaveWebPageCache | It will do $staticGenerator->makeResourceStaticFileOnWebCache($modx->resource); is related option is true |
+| OnResourceAutoPublish | It will cache every published resource and remove cache for every unpublished resource |
+| OnDocFormSave, OnDocPublished, OnResourceUndelete | It will cache resource |
+| OnDocUnPublished | Remove cache |
+| OnResourceDelete | Delete resource cache if remaining |
+| OnSiteRefresh | Rebuild static cache if LCI_STOCKPILE_REGENERATE_ON_CLEAR_CACHE=1 and static cache is enabled |
+
+
+### xPDO, database table
+
+stockpile_cache_que table with class name StockpileQueLog
+
+### Events to write custom plugins
+
+Easily customize what is cached on saved via the OnStockpileSave event. Write your own plugin.
+
+`OnStockpileSave` event: 
     - @var \LCI\MODX\Stockpile $stockpile
     - @var \modResource $resource
     - @var array $data - resource fields and TVs
-    - can use $stockpile->setResourceData($data); after you make mods
- 
-## CLI
+    - can use $stockpile->setResourceData($data); after you make modifications to save the data to the cache file
 
-Command line:
+`OnStockpileAfterSaveMakeQueLog` and `OnStockpileAfterDeleteMakeQueLog`
+
+#### Example to create a cache buster
+
+```php
+use LCI\MODX\Stockpile\Stockpile;
+use LCI\MODX\Stockpile\StockpileQue;
+
+$eventName = $modx->event->name;
+
+/**
+ * This plugin should only be called in the OnStockpileAfterSaveMakeQueLog and OnStockpileAfterDeleteMakeQueLog event
+ * LCI1.com custom plugin to bust the stockpile static cache for related resources
+ *
+ * @param Stockpile $stockpile
+ * @param StockpileQue $stockpileQue
+ * @param modResource $resource
+ * @param array $data - the resource data as a stockpile array
+ */
+
+switch($eventName) {
+    case 'OnStockpileAfterDeleteMakeQueLog':
+        // no break
+    case 'OnStockpileAfterSaveMakeQueLog':
+        if ($resource->get('id') == 10) {
+            $stockpileQue->rebuildAll();
+        }
+        
+        // Blog:
+        $stockpileQue->rebuildParentWhenResourceHasParentID($resource, 10);
+
+        // Products that can show up on a lot of product category pages
+        $parent = $resource->get('parent');
+        if (in_array($parent, [50, 75])) {
+            $stockpileQue->rebuildResourceIDs([20, 22, 30, 45, 63]);
+        }
+
+        // Siblings
+        if ($resource->get('id') == 15) {
+            $stockpileQue->rebuildResourceID(16);
+        }
+        if ($resource->get('id') == 16) {
+            $stockpileQue->rebuildResourceID(15);
+        }
+        break;
+}
+```
+
+## CLI Command line
 
  - ```cd /www/core/vendor/bin```
- - ```php orchestrator```
+ - ```php orchestrator``` this will show a complete list of options
  
-Options
+ _Note_ 
+You can run the orchestrator commands from anywhere in the path. For example on MODXCloud this works:  
+```php /www/core/vendor/bin/orchestrator ``` 
+AND
+```
+cd /www/core/
+php vendor/bin/orchestrator 
+```
  
- - `stockpile:build` ~ this will (re)cache all resources
- - `stockpile:build --type r -id 2` ~ this will (re)cache a resource ID
-    - Short hand: `stockpile:build -t r -i 2`
- - `stockpile:remove` ~ Clear/Remove all stockpile cache
- - `stockpile:remove --type r -id 2` ~ clear/remove cache for that resource ID
-    - Short hand: `stockpile:remove -t r -i 2`
+### Stockpile commands
+ 
+ - `php orchestrator stockpile:build` ~ this will (re)cache all resources
+ - `php orchestrator stockpile:build --ids 2,3` ~ this will (re)cache a comma separated list of resource IDs
+    - Short hand: `php orchestrator stockpile:build -i 2,3`
+ - `php orchestrator stockpile:remove` ~ Clear/Remove all stockpile cache
+ - `php orchestrator stockpile:remove --ids 2,3` ~ clear/remove cache for that resource ID
+    - Short hand: `php orchestrator stockpile:remove -i 2,3`
+ - `php orchestrator stockpile:que`
+    Process Stockpile cache que, if using a custom plugin then it is suggested to set a cron job to run this process 
+    every 5 to 15 minutes depending on how fast you want related content pages to be recached.
 
 ## Static Generator 
 
