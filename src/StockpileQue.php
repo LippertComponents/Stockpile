@@ -36,7 +36,12 @@ class StockpileQue
     public function processQueLog($batch_limit=20)
     {
         // get total number of items to cache
-        $total = $this->modx->getCount('StockpileQueLog',['processed' => 0]);
+        $total = $this->modx->getCount('StockpileQueLog', ['processed' => 0]);
+
+        $this->symfonyStyle->writeln($total.' resources are in the que');
+        if (empty($total)) {
+            return 0;
+        }
 
         $use_progress = false;
         if ($this->symfonyStyle instanceof SymfonyStyle) {
@@ -44,7 +49,7 @@ class StockpileQue
             $use_progress = true;
         }
 
-        $count = $this->batchLog($batch_limit, 0, $use_progress);
+        $count = $this->batchQueLog($batch_limit, 0, $use_progress);
 
         if ($use_progress) {
             $this->symfonyStyle->progressFinish();
@@ -135,11 +140,12 @@ class StockpileQue
      */
     protected function batchQueLog($limit, $count, $use_progress=false)
     {
-        /** @var array|bool $queLogResources - false if empty or [\StockpileQueLog, ...] */
-        $queLogResources = $this->modx->getCollection('StockpileQueLog', ['processed' => 0]);
+        $query = $this->modx->newQuery('StockpileQueLog', ['processed' => 0]);
+        $query->sortby('id', 'ASC');
+        $query->limit($limit);
 
-        $queLogResources->sortBy('id', 'ASC');
-        $queLogResources->limit($limit);
+        /** @var array|bool $queLogResources - false if empty or [\StockpileQueLog, ...] */
+        $queLogResources = $this->modx->getCollection('StockpileQueLog', $query);
 
         $total = count($queLogResources);
 
@@ -158,10 +164,11 @@ class StockpileQue
 
             $queLog->set('processed', 1);
             $queLog->set('processed_date', date('Y-m-d H:i:s'));
+            $queLog->save();
         }
 
         if ($total >= $limit) {
-            $this->batchLog($limit, $count, $use_progress);
+            return $this->batchLog($limit, $count, $use_progress);
         }
 
         return $count;

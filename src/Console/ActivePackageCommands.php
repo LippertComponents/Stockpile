@@ -15,6 +15,7 @@ class ActivePackageCommands implements PackageCommands
     protected $commands = [
         'modx_installed' => [
             'LCI\MODX\Stockpile\Console\Command\BuildCache',
+            'LCI\MODX\Stockpile\Console\Command\ProcessCacheQue',
             'LCI\MODX\Stockpile\Console\Command\RemoveCache'
         ],
         'modx_not_installed' => []
