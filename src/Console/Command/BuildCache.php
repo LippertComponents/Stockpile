@@ -49,7 +49,7 @@ class BuildCache extends BaseCommand
         /** @var SymfonyStyle $io */
         $io = new SymfonyStyle($input, $output);
 
-        $ids = explode(',', $input->getOption('ids'));
+        $ids = explode(',', trim($input->getOption('ids')));
 
         $modx = $this->console->loadMODX();
         $stockpile = new Stockpile($modx);
@@ -57,7 +57,7 @@ class BuildCache extends BaseCommand
 
         $staticGenerator = new StaticGenerator($modx);
 
-        if (count($ids) > 1 || (count($ids) == 1 && !empty(count($ids)))) {
+        if (count($ids) > 1 || (count($ids) == 1 && !empty($ids[0]))) {
             // select resources
             $resources = $modx->getCollection('modResource', ['id:IN' => $ids]);
 

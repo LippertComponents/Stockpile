@@ -9,6 +9,10 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
     MINOR version when you add functionality in a backwards-compatible manner, and
     PATCH version when you make backwards-compatible bug fixes.
 
+## [v1.3.1](https://github.com/LippertComponents/Stockpile/compare/v1.3.0...v1.3.1) - 2019-06-11
+### Changed
+- Fix stockpile:build and stockpile:remove to do all resources with no options as expected
+
 ## [v1.3.0](https://github.com/LippertComponents/Stockpile/compare/v1.2.1...v1.3.0) - 2019-06-07
 ### Added 
 - stockpile:que command to allow running a cron job to rebuild cache of only those in the que

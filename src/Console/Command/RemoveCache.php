@@ -31,7 +31,7 @@ class RemoveCache extends BaseCommand
                 'i',
                 InputOption::VALUE_OPTIONAL,
                 'If type is Select Resources then a valid list of comma separated Resource IDs',
-                '0'
+                ''
             );
     }
 
@@ -47,7 +47,7 @@ class RemoveCache extends BaseCommand
         /** @var SymfonyStyle $io */
         $io = new SymfonyStyle($input, $output);
 
-        $ids = explode(',', $input->getOption('ids'));
+        $ids = explode(',', trim($input->getOption('ids')));
 
         $modx = $this->console->loadMODX();
         $stockpile = new Stockpile($modx);
@@ -55,7 +55,7 @@ class RemoveCache extends BaseCommand
 
         $staticGenerator = new StaticGenerator($modx);
 
-        if (count($ids) > 1 || (count($ids) == 1 && !empty(count($ids)))) {
+        if (count($ids) > 1 || (count($ids) == 1 && !empty($ids[0]))) {
             $resources = $modx->getCollection('modResource', ['id:IN' => $ids]);
 
             if (!$resources) {
