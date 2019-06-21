@@ -9,6 +9,10 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
     MINOR version when you add functionality in a backwards-compatible manner, and
     PATCH version when you make backwards-compatible bug fixes.
 
+## [v1.3.2](https://github.com/LippertComponents/Stockpile/compare/v1.3.1...v1.3.2) - 2019-06-21
+### Changed
+- Fix caching modWeblink to set the content and full_url as the processed/parsed content to make the destination URL 
+
 ## [v1.3.1](https://github.com/LippertComponents/Stockpile/compare/v1.3.0...v1.3.1) - 2019-06-11
 ### Changed
 - Fix stockpile:build and stockpile:remove to do all resources with no options as expected

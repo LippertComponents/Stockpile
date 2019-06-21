@@ -201,7 +201,14 @@ class Stockpile
         }
 
         $this->resource_data = $resource->toArray();
-        $this->resource_data['full_url'] = $this->modx->makeUrl($resource->get('id'), $resource->get('context_key'), '', 'full');
+        if ($resource->get('class_key') == 'modWebLink') {
+            $this->resource_data['content'] = $this->processModWebLink($resource->get('content'));
+            $this->resource_data['full_url'] = $this->resource_data['content'];
+
+        } else {
+            $this->resource_data['full_url'] = $this->modx->makeUrl($resource->get('id'), $resource->get('context_key'), '', 'full');
+        }
+
         $this->resource_data['tv'] = $tvs;
 
         $tagger = new Tagger($this->modx);
@@ -371,4 +378,24 @@ class Stockpile
         // @TODO run as cron job every 5 minutes to process que
     }
 
+    /**
+     * Based on MODX -> core/model/modx/modweblink.class.php->process
+     *
+     * @param string $string
+     * @return string
+     */
+    protected function processModWebLink($string)
+    {
+        if (!is_numeric($string)) {
+            $this->modx->getParser();
+            $maxIterations= isset ($this->modx->config['parser_max_iterations']) ? intval($this->modx->config['parser_max_iterations']) : 10;
+            $this->modx->parser->processElementTags($tag='', $string, true, true, '[[', ']]', array(), $maxIterations);
+        }
+
+        if (is_numeric($string)) {
+            return $this->modx->makeUrl(intval($string), '', '', 'full');
+        }
+
+        return $string;
+    }
 }
