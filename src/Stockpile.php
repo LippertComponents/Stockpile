@@ -286,12 +286,13 @@ class Stockpile
     }
 
     /**
+     * @param \xPDOQuery|null $query
      * @return int
      */
-    public function cacheAllResources()
+    public function cacheAllResources(\xPDOQuery $query=null)
     {
         // get total number of items to cache
-        $resources = $this->modx->getCollection('modResource');
+        $resources = $this->modx->getCollection('modResource', $query);
 
         $total = count($resources);
         $use_progress = false;

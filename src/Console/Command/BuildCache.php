@@ -34,6 +34,13 @@ class BuildCache extends BaseCommand
                 InputOption::VALUE_OPTIONAL,
                 'Optionally limit to specific resources IDs, pass a valid list of comma separated Resource IDs',
                 '0'
+            )
+            ->addOption(
+                'exclude',
+                'e',
+                InputOption::VALUE_OPTIONAL,
+                'Optionally exclude resources that have this parent ID(s), pass a valid list of comma separated Resource IDs',
+                '0'
             );
     }
 
@@ -50,6 +57,7 @@ class BuildCache extends BaseCommand
         $io = new SymfonyStyle($input, $output);
 
         $ids = explode(',', trim($input->getOption('ids')));
+        $exclude_parents = explode(',', trim($input->getOption('exclude')));
 
         $modx = $this->console->loadMODX();
         $stockpile = new Stockpile($modx);
@@ -57,27 +65,20 @@ class BuildCache extends BaseCommand
 
         $staticGenerator = new StaticGenerator($modx);
 
+        /** @var \xPDOQuery $query */
+        $query = $modx->newQuery('modResource');
         if (count($ids) > 1 || (count($ids) == 1 && !empty($ids[0]))) {
             // select resources
-            $resources = $modx->getCollection('modResource', ['id:IN' => $ids]);
-
-            if (!$resources) {
-                $output->writeln('Please pass valid resource IDs');
-
-            } else {
-                foreach ($resources as $resource) {
-                    $stockpile->cacheResource($resource);
-
-                    $staticGenerator->rebuildStaticResourceOnSave($resource);
-                    $output->writeln('Resource cached: ' . $resource->get('id') . ' ' . $resource->get('pagetitle'));
-                }
-            }
-
-        } else {
-            // all
-            $count = $stockpile->cacheAllResources();
-            $output->writeln('All ' . $count . ' resources have been cached by stockpile');
+            $query->where(['id:IN' => $ids]);
         }
+
+        if (count($exclude_parents) > 1 || (count($exclude_parents) == 1 && !empty($exclude_parents[0]))) {
+            $output->writeln('Excluding resources children with the parent ids: '.trim($input->getOption('exclude')));
+            $query->where(['parent:NOT IN' => $exclude_parents]);
+        }
+
+        $count = $stockpile->cacheAllResources($query);
+        $output->writeln($count . ' resources have been cached by stockpile');
 
         $output->writeln($this->getRunStats());
     }
