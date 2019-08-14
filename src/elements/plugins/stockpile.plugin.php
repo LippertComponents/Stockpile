@@ -44,6 +44,8 @@ switch($eventName) {
     case 'OnDocUnPublished':
         // no break
     case 'OnResourceUndelete':
+        // no break
+    case 'FredOnFredResourceSave':
         /** @var modResource $cleanResource removes extra/dirty data that is passed via the manager */
         $cleanResource = $modx->getObject('modResource', $resource->get('id'));
         $stockpile->onSaveResource($cleanResource);

@@ -40,7 +40,7 @@ stockpile plugin is installed and is will save data on the following events
 | OnDocUnPublished | Remove cache |
 | OnResourceDelete | Delete resource cache if remaining |
 | OnSiteRefresh | Rebuild static cache if LCI_STOCKPILE_REGENERATE_ON_CLEAR_CACHE=1 and static cache is enabled |
-
+| FredOnFredResourceSave | If you use Fred, you will need to manually attach this event to the stockpile plugin after you have installed Fred |
 
 ### xPDO, database table
 
