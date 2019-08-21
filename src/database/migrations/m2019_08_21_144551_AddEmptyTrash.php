@@ -30,7 +30,7 @@ class m2019_08_21_144551_AddEmptyTrash extends Migrations
             ->attachOnEvent('OnResourceAutoPublish')
             ->attachOnEvent('FredOnFredResourceSave')
             ->attachOnEvent('OnEmptyTrash')
-            ->blend();
+            ->blend(true);
 
         if ($saved) {
             $this->blender->outSuccess('Stockpile Plugin has been installed');
