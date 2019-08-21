@@ -9,6 +9,10 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
     MINOR version when you add functionality in a backwards-compatible manner, and
     PATCH version when you make backwards-compatible bug fixes.
 
+## [v1.4.1](https://github.com/LippertComponents/Stockpile/compare/v1.4.0...v1.4.1) - 2019-08-21
+### Changed
+- Listen to the OnEmptyTrash event
+
 ## [v1.4.0](https://github.com/LippertComponents/Stockpile/compare/v1.3.3...v1.4.0) - 2019-08-14
 ### Added
 - Add switch for event FredOnFredResourceSave on Stockpile plugin, will need to manually attach event to plugin after Fred has been installed.

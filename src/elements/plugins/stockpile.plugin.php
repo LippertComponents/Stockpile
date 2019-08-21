@@ -61,6 +61,11 @@ switch($eventName) {
 
         break;
 
+    case 'OnEmptyTrash':
+        foreach ($ids as $id) {
+            $stockpile->removeResourceCache($id);
+        }
+        break;
     case 'OnSiteRefresh':
         $staticGenerator->rebuildAllResourcesOnClearCache();
 
